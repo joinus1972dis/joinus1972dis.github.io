@@ -1,0 +1,13 @@
+{
+  "answer": "ごかてやD",
+  "cabins": {
+    "A": { "nextCabin": "C", "problemRef": "C-6", "clue1": "なすの時計回りの隣は、にく" },
+    "B": { "nextCabin": "D", "problemRef": "D-6", "clue1": "メロンの席から時計回りに2度進むと、りんごの席。" },
+    "C": { "nextCabin": "E", "problemRef": "E-6", "clue1": "たまねぎの席から時計回りに2席進むと、にくの席。" },
+    "D": { "nextCabin": "F", "problemRef": "F-6", "clue1": "コーラの席から時計回りに1席進むと、お茶の席。" },
+    "E": { "nextCabin": "G", "problemRef": "G-6", "clue1": "お皿の席から時計回りに2席進むと、うちわの席。" },
+    "F": { "nextCabin": "H", "problemRef": "H-6", "clue1": "ソーセージの席から時計回りに1席進むと、なすの席。" },
+    "G": { "nextCabin": "A", "problemRef": "A-6", "clue1": "たまねぎの席から時計回りに1席進むと、なすの席。" },
+    "H": { "nextCabin": "B", "problemRef": "B-6", "clue1": "かにの席から時計回りに1席進むと、ほたての席。" }
+  }
+}

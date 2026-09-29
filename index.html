@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f3f0e9" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description" content="ミステリーラリー参加者向け案内ページ。会場：キラナガーデン豊洲" />
+  <title>ミステリーラリー | 参加者向け案内</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+  <main class="site-shell">
+    <header class="site-header">
+      <h1>MYSTERY RALLY</h1>
+      <p class="site-title-ja">ミステリーラリー</p>
+      <p class="venue-name"><span>会場</span> キラナガーデン豊洲</p>
+    </header>
+
+    <section class="intro" aria-label="ミステリーラリーの案内">
+      <p>会場内の手がかりをもとに、順番に謎を解いていきます。</p>
+    </section>
+
+    <section class="main-card" id="experience-card">
+      <div id="cabin-screen" class="screen is-active" aria-labelledby="cabin-heading">
+        <div class="section-heading">
+          <span class="step-number" aria-hidden="true">1</span>
+          <div>
+            <p class="step-label">STEP 1</p>
+            <h2 id="cabin-heading">現在地を選択</h2>
+          </div>
+        </div>
+
+        <div class="guide-bubble">
+          <p>自分が現在いるキャビンを選択してください。</p>
+        </div>
+
+        <div class="cabin-grid" id="cabin-grid" role="group" aria-label="現在いるキャビンを選択">
+          <button class="cabin-button" type="button" data-cabin="A"><span>キャビン</span><strong>A</strong></button>
+          <button class="cabin-button" type="button" data-cabin="B"><span>キャビン</span><strong>B</strong></button>
+          <button class="cabin-button" type="button" data-cabin="C"><span>キャビン</span><strong>C</strong></button>
+          <button class="cabin-button" type="button" data-cabin="D"><span>キャビン</span><strong>D</strong></button>
+          <button class="cabin-button" type="button" data-cabin="E"><span>キャビン</span><strong>E</strong></button>
+          <button class="cabin-button" type="button" data-cabin="F"><span>キャビン</span><strong>F</strong></button>
+          <button class="cabin-button" type="button" data-cabin="G"><span>キャビン</span><strong>G</strong></button>
+          <button class="cabin-button" type="button" data-cabin="H"><span>キャビン</span><strong>H</strong></button>
+        </div>
+      </div>
+
+      <div id="answer-screen" class="screen" aria-labelledby="answer-heading" hidden>
+        <div class="screen-toolbar">
+          <button id="back-button" class="back-button" type="button">
+            <span aria-hidden="true">←</span> キャビン選択に戻る
+          </button>
+          <p class="current-cabin">現在地：<strong>キャビン <span id="selected-cabin-label">A</span></strong></p>
+        </div>
+
+        <div class="section-heading">
+          <span class="step-number" aria-hidden="true">2</span>
+          <div>
+            <p class="step-label">STEP 2</p>
+            <h2 id="answer-heading">5文字を入力</h2>
+          </div>
+        </div>
+
+        <div class="guide-bubble answer-guide">
+          <p>問題①〜⑤の答えから、頭文字を①から順に入力してください。</p>
+        </div>
+
+        <div class="pin-entry" id="answer-entry" role="group" aria-label="問題1から5の頭文字">
+          <label class="pin-cell">
+            <span class="pin-number">①</span>
+            <input class="answer-field" data-index="0" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="ja" aria-label="問題1の頭文字" enterkeyhint="next" />
+            <span class="ime-preview" aria-hidden="true"></span>
+          </label>
+          <label class="pin-cell">
+            <span class="pin-number">②</span>
+            <input class="answer-field" data-index="1" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="ja" aria-label="問題2の頭文字" enterkeyhint="next" />
+            <span class="ime-preview" aria-hidden="true"></span>
+          </label>
+          <label class="pin-cell">
+            <span class="pin-number">③</span>
+            <input class="answer-field" data-index="2" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="ja" aria-label="問題3の頭文字" enterkeyhint="next" />
+            <span class="ime-preview" aria-hidden="true"></span>
+          </label>
+          <label class="pin-cell">
+            <span class="pin-number">④</span>
+            <input class="answer-field" data-index="3" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="ja" aria-label="問題4の頭文字" enterkeyhint="next" />
+            <span class="ime-preview" aria-hidden="true"></span>
+          </label>
+          <label class="pin-cell">
+            <span class="pin-number">⑤</span>
+            <input class="answer-field" data-index="4" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="ja" aria-label="問題5の頭文字" enterkeyhint="done" />
+            <span class="ime-preview" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <p class="input-help">かな入力に対応しています。</p>
+
+        <button class="check-button" id="check-button" type="button" disabled>
+          答え合わせ
+        </button>
+
+        <div id="result" class="result" role="status" aria-live="polite" hidden></div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p>本ページはイベント参加者向けの案内ページです。<br />キラナガーデン豊洲の公式ウェブサイトではありません。</p>
+    </footer>
+  </main>
+
+  <script src="./assets/cabin-data.js"></script>
+  <script src="./assets/app.js" defer></script>
+</body>
+</html>
