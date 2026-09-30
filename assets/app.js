@@ -22,13 +22,30 @@
     ? new Intl.Segmenter('ja', { granularity: 'grapheme' })
     : null;
 
+  function canonicalizeInput(value) {
+    // Some Japanese keyboards (including Simeji) may emit the spacing
+    // dakuten/handakuten characters separately. Convert them to combining
+    // marks before Unicode normalization so e.g. "か゛" becomes "が".
+    return String(value)
+      .replace(/\u309B/g, '\u3099')
+      .replace(/\u309C/g, '\u309A')
+      .normalize('NFKC')
+      .normalize('NFC');
+  }
+
   function splitGraphemes(value) {
-    if (segmenter) return [...segmenter.segment(String(value))].map((part) => part.segment);
-    return Array.from(String(value));
+    const normalized = canonicalizeInput(value);
+    if (segmenter) return [...segmenter.segment(normalized)].map((part) => part.segment);
+    return Array.from(normalized);
+  }
+
+  function isKanaGrapheme(value) {
+    const char = canonicalizeInput(value);
+    return /^[\u3040-\u30FF\u31F0-\u31FF\uFF66-\uFF9F]+$/u.test(char);
   }
 
   function normalize(value) {
-    return String(value).normalize('NFKC').toLocaleUpperCase('ja-JP');
+    return canonicalizeInput(value).toLocaleUpperCase('ja-JP');
   }
 
   function toBytes(value) {
@@ -154,9 +171,28 @@
     clearFeedback();
     updateCheckButton();
 
-    if (moveFocus && lastIndex < answerFields.length - 1) {
+    if (!moveFocus) return;
+
+    // Do not immediately leave a field after a single kana.
+    // Simeji can commit the base kana first (e.g. "か") and then update
+    // that same field to the voiced/semi-voiced form (e.g. "が"/"ぱ")
+    // without keeping the browser in an IME composition state. Moving focus
+    // after the first input would make that second operation impossible.
+    //
+    // Keeping focus here is still natural for continuous input: when the user
+    // types the next kana, the field temporarily contains two graphemes and
+    // writeCharacters() distributes them across the current and next boxes.
+    if (chars.length === 1 && isKanaGrapheme(chars[0]) && lastIndex < answerFields.length - 1) {
+      try {
+        const length = answerFields[lastIndex].value.length;
+        answerFields[lastIndex].setSelectionRange(length, length);
+      } catch (_) { /* no-op */ }
+      return;
+    }
+
+    if (lastIndex < answerFields.length - 1) {
       focusField(lastIndex + 1, Boolean(answerFields[lastIndex + 1].value));
-    } else if (moveFocus) {
+    } else {
       focusField(lastIndex, false);
     }
   }
@@ -281,13 +317,20 @@
     });
 
     field.addEventListener('compositionupdate', (event) => {
-      renderImePreview(index, event.data || field.value);
+      // Use the complete field value when available. If a kana already exists
+      // in this box, a following composition is appended to it and can then be
+      // distributed to the next box on commit.
+      renderImePreview(index, field.value || event.data || '');
     });
 
     field.addEventListener('compositionend', (event) => {
       composing.delete(field);
       suppressCommittedInput.add(field);
-      const committed = event.data || field.value;
+      // field.value includes both any previously committed kana and the text
+      // that has just been committed. event.data contains only the latest
+      // composition on several browsers, so using it alone can overwrite the
+      // previous character when focus intentionally remains in this field.
+      const committed = field.value || event.data || '';
       writeCharacters(index, committed, true);
       window.setTimeout(() => suppressCommittedInput.delete(field), 0);
     });
@@ -297,19 +340,11 @@
 
       const transientComposition = event.isComposing || composing.has(field) || event.inputType === 'insertCompositionText';
       if (transientComposition) {
-        renderImePreview(index, event.data || field.value);
+        renderImePreview(index, field.value || event.data || '');
         return;
       }
 
       clearImePreview();
-      const chars = splitGraphemes(field.value);
-      if (chars.length <= 1) {
-        if (chars.length === 1) field.value = chars[0];
-        clearFeedback();
-        updateCheckButton();
-        if (chars.length === 1 && index < answerFields.length - 1) focusField(index + 1, true);
-        return;
-      }
       writeCharacters(index, field.value, true);
     });
 
